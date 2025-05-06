@@ -29,6 +29,11 @@ export default function App({ Component, pageProps }: AppProps) {
               My Sprites
           </Link>
         </NavigationMenuItem>
+        <NavigationMenuItem>
+          <Link href="/about"  className={navigationMenuTriggerStyle()} >
+              How it Works
+          </Link>
+        </NavigationMenuItem>
         </NavigationMenuList>
         </NavigationMenu>
 

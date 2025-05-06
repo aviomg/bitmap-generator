@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash, Trash2, X, XIcon } from "lucide-react";
+import { Plus, X, XIcon } from "lucide-react";
 import { Card, CardContent,CardDescription, CardTitle, CardHeader } from "@/components/ui/card";
 import {
     Dialog,
@@ -13,21 +12,38 @@ import {
     DialogTitle,
     DialogTrigger,
   } from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { getBitMapArray, getHex3Digit } from "@/utils/canvas_calculations";
 import { generateUniqueId, Sprite } from "@/components/canvas";
 import { toast } from "sonner";
+import {
+    DndContext,
+    closestCenter,
+    PointerSensor,
+    useSensor,
+    useSensors,
+    DragEndEvent,
+  } from '@dnd-kit/core';
+  import {
+    SortableContext,
+    arrayMove,
+    horizontalListSortingStrategy,
+    useSortable,
+    verticalListSortingStrategy,
+  } from '@dnd-kit/sortable';
+  import { CSS } from '@dnd-kit/utilities';
+
 export default function SavedSpritesPage() {
   const [sprites, setSprites] = useState<Sprite[]>([]);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [genisopen, setGenIsOpen] = useState<boolean>(false);
   const [clearisopen, setClearIsOpen] = useState<boolean>(false);
   const [bmem, setBmem] = useState<string>("");
-
+  const [reorderMode, setReorderMode] = useState(false);
   const[textarr,setTextArr] = useState<string>("");
   const router = useRouter();
+  const sensors = useSensors(useSensor(PointerSensor));
+
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("savedSprites") || "[]");
@@ -101,14 +117,28 @@ export default function SavedSpritesPage() {
         setSprites(reOrderedSprites); 
 
     }
+    const handleDragEnd = (event: DragEndEvent) => {
+        const { active, over } = event;
+        if (!over || active.id === over.id) return;
+      
+        const oldIndex = sprites.findIndex((s) => s.id === active.id);
+        const newIndex = sprites.findIndex((s) => s.id === over.id);
+        const reordered = arrayMove(sprites, oldIndex, newIndex).map((sprite, i) => ({
+          ...sprite,
+          index: i,
+        }));
+      
+        setSprites(reordered);
+        localStorage.setItem("savedSprites", JSON.stringify(reordered));
+      };
   return (
-    <div className="max-w-3xl mx-auto p-5">
-      <h1 className="text-2xl font-bold mb-4">My Saved Sprites</h1>
+    <div className="max-w-3xl mx-auto p-5 ">
+      <h1 className="text-3xl font-bold mb-6 ">My Saved Sprites</h1>
      
-      <div className="flex flex-row gap-x-10 justify-center mx-auto">
+      <div className="flex flex-row gap-x-6 justify-start mx-auto mb-10">
         <Dialog open={isOpen} >
             <DialogTrigger asChild>
-            <Button onClick={()=>{setIsOpen(true)}} size="sm" variant="secondary" className="w-1/3 rounded-lg ">Load Sprites from bmem</Button>
+            <Button onClick={()=>{setIsOpen(true)}} size="sm" variant="secondary" className=" rounded-lg ">Load Sprites from bmem</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[525px]">
         <DialogHeader>
@@ -135,7 +165,7 @@ export default function SavedSpritesPage() {
         </Dialog>
         <Dialog open={genisopen} >
             <DialogTrigger asChild>
-            <Button onClick={generateBmem} size="sm" variant="secondary" className="w-1/3 rounded-lg ">Generate bmem from sprites</Button>
+            <Button onClick={generateBmem} size="sm" variant="secondary" className="rounded-lg text-sm">Generate bmem from sprites</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[525px]">
         <DialogHeader>
@@ -197,23 +227,53 @@ Are you sure you want to delete all sprites?
 </DialogContent>
 
         </Dialog>
-
+        <Button variant="outline" onClick={() => setReorderMode((prev) => !prev)}>
+  {reorderMode ? "Done Reordering" : "Reorder Sprites"}
+</Button>
         
 
       </div>
+      <div>
+      {reorderMode ? (
+  <DndContext
+    sensors={sensors}
+    collisionDetection={closestCenter}
+    onDragEnd={handleDragEnd}
+  >
+    <SortableContext
+      items={sprites.map((s) => s.id)}
+      strategy={horizontalListSortingStrategy}
+    >
       <div className="mt-6 grid gap-6 grid-cols-2 md:grid-cols-3">
         {sprites.map((sprite) => (
- <MiniCanvas grid={sprite.grid} id={sprite.id} name={sprite.name} index={sprite.index} onDelete={() => deleteSprite(sprite.id)} />        ))}
-        <Button onClick={()=>{router.push("/")}} variant="outline" className="p-2 w-1/2 rounded-full my-auto mx-auto">
+          <SortableMiniCanvas
+            key={sprite.id}
+            sprite={sprite}
+            onDelete={() => deleteSprite(sprite.id)}
+          />
+        ))}
+      </div>
+    </SortableContext>
+  </DndContext>
+) : (
+  <div className="mt-6 grid gap-6 grid-cols-2 md:grid-cols-3">
+  {sprites.map((sprite) => (
+<MiniCanvas grid={sprite.grid} id={sprite.id} name={sprite.name} index={sprite.index} onDelete={() => deleteSprite(sprite.id)} />        ))}
+<Button onClick={()=>{router.push("/")}} variant="outline" className="p-2 w-1/2 rounded-full my-auto mx-auto">
         <Plus/>
         Add new</Button>
+</div>
+)}
+
+        
+     
       </div>
     </div>
   );
 }
 
-type minicanvasprops = {grid:string[][],id:string,name:string,onDelete:()=>void, index:number}
-function MiniCanvas({grid,id,name,onDelete,index}:minicanvasprops) {
+type minicanvasprops = {grid:string[][],id:string,name:string,onDelete:()=>void, index:number, sorting?:boolean}
+function MiniCanvas({grid,id,name,onDelete,index,sorting}:minicanvasprops) {
     const [deleteopen,setDeleteOpen] = useState<boolean>(false);
     
     const router = useRouter();
@@ -224,7 +284,7 @@ function MiniCanvas({grid,id,name,onDelete,index}:minicanvasprops) {
     }
 
     return (
-    <Card draggable={true} key={id} className="gap-y-2  hover:bg-accent transition-all relative group"
+    <Card draggable={true} key={id} className={sorting? "gap-y-2  border-destructive bg-transparent hover:shadow-xl border-2 transition-all relative group":"gap-y-2  hover:bg-accent transition-all relative group"}
     >
         <CardHeader>
         <Dialog open={deleteopen} onOpenChange={setDeleteOpen}>
@@ -289,6 +349,30 @@ Are you sure you want to delete this sprite?
     
   );
 }
+function SortableMiniCanvas({ sprite, onDelete }: { sprite: Sprite, onDelete: () => void }) {
+    const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+      id: sprite.id,
+    });
+  
+    const style = {
+      transform: CSS.Transform.toString(transform),
+      transition,
+    };
+  
+    return (
+      <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+        <MiniCanvas
+          grid={sprite.grid}
+          id={sprite.id}
+          name={sprite.name}
+          index={sprite.index}
+          onDelete={onDelete}
+          sorting={true}
+        />
+      </div>
+    );
+  }
+  
 
 /*          <div key={sprite.id} className="border p-2 shadow rounded">
             <p className="text-sm font-semibold mb-2">{sprite.name} </p>
@@ -302,3 +386,10 @@ Are you sure you want to delete this sprite?
             setSprites([]);
         }
 */
+
+/* 
+      <div className="mt-6 grid gap-6 grid-cols-2 md:grid-cols-3">
+        {sprites.map((sprite) => (
+ <MiniCanvas grid={sprite.grid} id={sprite.id} name={sprite.name} index={sprite.index} onDelete={() => deleteSprite(sprite.id)} />        ))}
+
+*/    

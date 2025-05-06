@@ -1,7 +1,7 @@
 import React, { act } from "react";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "./ui/button";
-import { Pipette } from "lucide-react";
+import { Pipette, Router } from "lucide-react";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
@@ -9,6 +9,7 @@ import { getHex3Digit, getBitMapArray, convertArrayto6DigitBitMap, convert6Digit
 import { Toggle } from "./ui/toggle";
 import { toast } from "sonner";
 import { Badge } from "./ui/badge";
+import { useRouter } from "next/router";
 
 export type Sprite = {
   id:string,
@@ -25,6 +26,7 @@ type CanvasProps = {
   sprite?:Sprite;
 };
 export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProps){
+    const router = useRouter();
     let initial_bitmaparr:string[] = new Array(256).fill("fff");  
     const [hist,setHist] = useState<string[][]>([])
     const [isDown, setIsDown] = useState(false);
@@ -88,7 +90,23 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
         // Save back to localStorage
         localStorage.setItem(savedSpritesKey, JSON.stringify([...existing, newEntry]));
       
-        alert("Sprite saved!");
+       
+        
+          toast("Sprite saved!", {
+      
+            action: {
+              label: "View",
+              onClick: () => router.push("/sprites"),
+            },
+            classNames: {
+              toast: "!flex !items-center !group !relative !justify-between !gap-4 !rounded-md !border !border-primary !shadow-none !bg-transparent !p-4 ",
+              title: "!font-semibold !text-sm",
+              actionButton:
+                "!border !border-primary !bg-ring  !group-hover:bg-secondary !px-10 !py-1 !text-sm !font-medium !hover:bg-accent !hover:text-accent-foreground !rounded-md",
+        
+            },
+          })
+        
       };
 
       /*useEffect(()=>{
