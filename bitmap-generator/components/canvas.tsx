@@ -237,7 +237,7 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
           <Badge variant="secondary" className="text-md border-muted border text-primary-foreground font-bold my-1 mx-auto">
             Modifying: Sprite #{currSprite.index}
           </Badge>:
-          <Badge variant="secondary" className="text-md my-1 mx-auto text-primary-foreground  border font-bold border-muted">
+          <Badge variant="secondary" className=" text-md my-1 mx-auto text-primary-foreground  border font-bold border-muted">
             New Sprite
           </Badge>
 }

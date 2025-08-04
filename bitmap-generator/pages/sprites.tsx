@@ -133,7 +133,7 @@ export default function SavedSpritesPage() {
       };
   return (
     <div className="max-w-3xl mx-auto p-5 ">
-      <h1 className="text-3xl font-bold mb-6 ">My Saved Sprites</h1>
+      <h1 className="text-3xl font-bold mb-6 text-center">My Saved Sprites</h1>
      
       <div className="flex flex-row gap-x-6 justify-start mx-auto mb-10">
         <Dialog open={isOpen} >
@@ -197,7 +197,7 @@ export default function SavedSpritesPage() {
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
 <div className="text-center">
-Are you sure you want to delete all sprites?
+Are you sure you want to delete all sprites? This action cannot be undone.
 </div>
 <div className="flex flex-row space-x-4 text-center mx-auto">
 <DialogFooter>
@@ -259,7 +259,7 @@ Are you sure you want to delete all sprites?
   <div className="mt-6 grid gap-6 grid-cols-2 md:grid-cols-3">
   {sprites.map((sprite) => (
 <MiniCanvas grid={sprite.grid} id={sprite.id} name={sprite.name} index={sprite.index} onDelete={() => deleteSprite(sprite.id)} />        ))}
-<Button onClick={()=>{router.push("/")}} variant="outline" className="p-2 w-1/2 rounded-full my-auto mx-auto">
+<Button onClick={()=>{router.push("/")}} variant="outline" className="p-2 w-1/2 my-auto mx-auto">
         <Plus/>
         Add new</Button>
 </div>
@@ -268,6 +268,8 @@ Are you sure you want to delete all sprites?
         
      
       </div>
+      <p className="mt-8 text-center mx-auto">by Avi Kumar</p>
+
     </div>
   );
 }
