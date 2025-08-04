@@ -234,10 +234,10 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
     return(
         <div className="mx-auto text-center p-0 flex flex-col gap-y-2 ">
           {currSprite && editpage?
-          <Badge variant="secondary" className="text-md border-muted border text-primary-foreground font-bold my-1 mx-auto">
+          <Badge variant="secondary" className="border-[#E670AB] bg-[#d1519a80]  text-md border text-primary-foreground font-bold my-1 mx-auto">
             Modifying: Sprite #{currSprite.index}
           </Badge>:
-          <Badge variant="secondary" className=" text-md my-1 mx-auto text-primary-foreground  border font-bold border-muted">
+          <Badge variant="secondary" className="border-[#E670AB] bg-[#d1519a80] text-md my-1 mx-auto text-primary-foreground  border font-bold ">
             New Sprite
           </Badge>
 }
