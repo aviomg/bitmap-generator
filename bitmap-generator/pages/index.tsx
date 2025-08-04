@@ -1,31 +1,36 @@
 import { Canvas } from "@/components/canvas";
-
-
-
+import { Button } from "@/components/ui/button";
+import { Card, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Pipette } from "lucide-react";
+import { useState } from "react";
+import {
+    NavigationMenu,
+    NavigationMenuContent,
+    NavigationMenuItem,
+    NavigationMenuLink,
+    NavigationMenuList,
+    NavigationMenuTrigger,
+    navigationMenuTriggerStyle,
+  } from "@/components/ui/navigation-menu"
+import Link from "next/link";
+  
 
 export default function Home(){
-    return(<div className="max-w-[600px] mx-auto text-center p-5 flex flex-col gap-y-5 ">
+
+    const [activeColor, setActiveColor] = useState<string>("#ffffff");
+    const [selecting, setSelecting] = useState<boolean>(false);
+
+
+    return(<div className="max-w-[700px] mx-auto text-center p-5 flex flex-col gap-y-0 ">
 			<h1 className="text-3xl font-bold ">16x16 Sprite Generator for Comp 541</h1>
-            <Canvas />
-            <button className="mt-2" >Undo</button><br />
-			Just click on the board to color it with with whatever color is currently selected
-			<div>
-				<label>Select Color</label>
-				<i className="fa fa-eyedropper" aria-hidden="true" id = "eyedropper"></i>
-				<input type = "color" id = "colorizer" value = "#0000ff" />
-				<button >Color Entire Board</button>
-			</div>
-			<textarea id = "bitmap"></textarea>
-			<div>
-				<label>Live update of Hexcodes</label>
-				<input id="liveUpdate" type="checkbox" />
-			</div>
-			<div className = "my-2.5 mx-auto">
-				<button >Generate hexcodes</button>
-				<button >Copy to Clipboard</button>
-				<button >Load from Textarea</button>
-				<button >Toggle Border</button>
-			</div> 
+            <div className="flex flex-row  ">
+            <Canvas  editpage={false}/>   
+         
+            </div>
+<p className="mt-8">by Avi Kumar</p>
 		</div>
 
 		
