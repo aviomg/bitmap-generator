@@ -3,11 +3,8 @@ import type { AppProps } from "next/app";
 import { Toaster } from "@/components/ui/sonner"
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 import Link from "next/link";

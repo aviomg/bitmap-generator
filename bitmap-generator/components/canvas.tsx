@@ -20,7 +20,7 @@ export type Sprite = {
 }
 export const generateUniqueId = () => crypto.randomUUID?.() || `${Date.now()}-${Math.random()}`;
 type CanvasProps = {
-  initialGrid?: string[][];
+  initialGrid?: string[][] | null;
   onGridChange?: (newGrid: string[][]) => void;
   editpage:boolean;
   sprite?:Sprite;
@@ -77,12 +77,12 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
       
         // Load existing sprites (or start fresh)
         const existing = JSON.parse(localStorage.getItem(savedSpritesKey) || "[]");
-      
+     //   console.log(existing.length)
         // Create a new entry
         const newEntry:Sprite = {
           id: generateUniqueId(), // unique ID based on timestamp
-          index:existing.length+1,
-          name: `Sprite ${existing.length + 1}`,
+          index:existing.length,
+          name: `Sprite ${existing.length}`,
           grid: grid, // your current grid state
           savedAt: new Date().toISOString(),
         };
@@ -140,7 +140,7 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
         setIsDown(true);
         if(selecting){
           const color = grid[row][col]
-          console.log(color);
+      //    console.log(color);
           setActiveColor(color);
           setSelecting(false);
           return
@@ -153,7 +153,7 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
           newhist[0].shift();
           setHist(newhist)
         }
-        console.log(hist)
+    //    console.log(hist)
         updateTile(row,col);
       }
 
@@ -163,7 +163,7 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
         if(!bmemstring){return}
         const [bmemarr,err] = getBitMapArray(bmemstring);
         if(err==0) return;
-        console.log(bmemarr);
+      //  console.log(bmemarr);
         setGrid(bmemarr);
        
 
@@ -184,12 +184,12 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
           sprite.id == currSprite.id? {...sprite,grid}:sprite
           );
         localStorage.setItem("savedSprites", JSON.stringify(updatedsprites));
-        console.log(JSON.parse(localStorage.getItem("savedSprites")||"[]"))
+     //   console.log(JSON.parse(localStorage.getItem("savedSprites")||"[]"))
       //  console.log(currSprite.grid);
       //  console.log(grid)
         toast("Sprite #" + currSprite.index + " updated!")
       }
-      else{console.log("none")}
+     // else{console.log("none")}
       }
 
     const generateHexcodes = ():string[] => {
@@ -220,7 +220,7 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
 
     }
     const Undo = () =>{
-        console.log(hist);
+     //   console.log(hist);
         if(hist.length ==0){return;}
         const lastrow = hist[hist.length-1]
         const newhist = hist.slice(0,-1)

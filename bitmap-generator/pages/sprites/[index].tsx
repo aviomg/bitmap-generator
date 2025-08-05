@@ -10,16 +10,19 @@ export default function EditSprite(){
     
     const [sprite, setSprite] = useState<Sprite | null>(null);
     const [grid,setGrid] = useState<string[][]|null>(null);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [name,setName] = useState<string>("");
 
 
     useEffect(()=>{
         console.log(index);
+        if (!index || Array.isArray(index)) return;
         if(!index) return;
         const indexnum = parseInt(index);
         console.log("didnt return")
         const saved = JSON.parse(localStorage.getItem("savedSprites") || "[]");
         console.log(saved)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const found = saved.find((s: any) => (s.index) == indexnum);
         
         if (found){ setSprite(found)
@@ -30,6 +33,7 @@ export default function EditSprite(){
         console.log(grid)
         };
         
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[index]);
 
 
