@@ -23,3 +23,5 @@ This bitmap generator is a tool designed to help students on parts b and c of th
 - Abraham Post, who developed the initial "Sprite Maker" website application for creating sprites for the COMP541 final project. Much of the logic in this application for creating individual sprites and saving them as hex code files (eg on the homepage) is based off of his work. View the original Sprite Maker here!
 
 - Dr. Montek Singh, who gave me the idea to create this project after having the best time in his COMP 541 course (which I'd recommend to everyone!)
+
+![Website Preview](preview.png)
