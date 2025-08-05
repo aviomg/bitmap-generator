@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
 import { Plus, X, XIcon } from "lucide-react";
-import { Card, CardContent,CardDescription, CardTitle, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardTitle, CardHeader } from "@/components/ui/card";
 import {
     Dialog,
     DialogContent,
@@ -29,9 +29,15 @@ import {
     arrayMove,
     horizontalListSortingStrategy,
     useSortable,
-    verticalListSortingStrategy,
   } from '@dnd-kit/sortable';
   import { CSS } from '@dnd-kit/utilities';
+
+type StorageSprite = {
+    id:string,
+    index:number,
+    name:string,
+    grid:string[][],
+  }
 
 export default function SavedSpritesPage() {
   const [sprites, setSprites] = useState<Sprite[]>([]);
@@ -76,7 +82,7 @@ export default function SavedSpritesPage() {
     for (const spr of sprites){
         const grid = spr.grid;
         const flatHexes = grid.flat();
-        let newbitmaparr:string[] = new Array(256).fill("");
+        const newbitmaparr:string[] = new Array(256).fill("");
         let i:number = 0
         for (i=0;i<256;i++){
           const dig3 = getHex3Digit(flatHexes[i]);
@@ -107,13 +113,17 @@ export default function SavedSpritesPage() {
     };
 
     const deleteSprite = (id:string) =>{
+      //const existing = JSON.parse(localStorage.getItem("savedSprites") || "[]");
+        //console.log(existing.length)
         const savedSprites = JSON.parse(localStorage.getItem("savedSprites") || "[]");
-        const updatedSprites = savedSprites.filter((sprite: any) => sprite.id !== id);
-        const reOrderedSprites = updatedSprites.map((sprite: any, index: number) => ({
+        const updatedSprites = savedSprites.filter((sprite: StorageSprite) => sprite.id !== id);
+        const reOrderedSprites = updatedSprites.map((sprite: StorageSprite, index: number) => ({
             ...sprite,
             index: index,
           }));
         localStorage.setItem("savedSprites", JSON.stringify(reOrderedSprites));
+     //   console.log("new local storage: ")
+       // console.log(JSON.stringify(reOrderedSprites))
         setSprites(reOrderedSprites); 
 
     }
@@ -171,7 +181,7 @@ export default function SavedSpritesPage() {
         <DialogHeader>
           <DialogTitle>Generate bmem</DialogTitle>
           <DialogDescription>
-            Copy the text below as your project's bmem.mem file!
+            Copy the text below as your project&apos;s bmem.mem file!
           </DialogDescription>
         </DialogHeader>
         <Textarea className="w-full !font-mono  !text-accent-foreground h-80 mx-auto border-secondary" value={bmem}
@@ -257,8 +267,8 @@ Are you sure you want to delete all sprites? This action cannot be undone.
   </DndContext>
 ) : (
   <div className="mt-6 grid gap-6 grid-cols-2 md:grid-cols-3">
-  {sprites.map((sprite) => (
-<MiniCanvas grid={sprite.grid} id={sprite.id} name={sprite.name} index={sprite.index} onDelete={() => deleteSprite(sprite.id)} />        ))}
+  {sprites.map((sprite,index) => (
+<MiniCanvas key={index} grid={sprite.grid} id={sprite.id} name={sprite.name} index={sprite.index} onDelete={() => deleteSprite(sprite.id)} />        ))}
 <Button onClick={()=>{router.push("/")}} variant="outline" className="p-2 w-1/2 my-auto mx-auto">
         <Plus/>
         Add new</Button>
@@ -275,7 +285,7 @@ Are you sure you want to delete all sprites? This action cannot be undone.
 }
 
 type minicanvasprops = {grid:string[][],id:string,name:string,onDelete:()=>void, index:number, sorting?:boolean}
-function MiniCanvas({grid,id,name,onDelete,index,sorting}:minicanvasprops) {
+function MiniCanvas({grid,id,onDelete,index,sorting}:minicanvasprops) {
     const [deleteopen,setDeleteOpen] = useState<boolean>(false);
     
     const router = useRouter();

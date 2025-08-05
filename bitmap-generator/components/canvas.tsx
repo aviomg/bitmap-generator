@@ -1,7 +1,7 @@
-import React, { act } from "react";
-import { useEffect, useRef, useState } from "react";
+import React from "react";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
-import { Pipette, Router } from "lucide-react";
+import { Pipette } from "lucide-react";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
@@ -20,21 +20,21 @@ export type Sprite = {
 }
 export const generateUniqueId = () => crypto.randomUUID?.() || `${Date.now()}-${Math.random()}`;
 type CanvasProps = {
-  initialGrid?: string[][];
+  initialGrid?: string[][] | null;
   onGridChange?: (newGrid: string[][]) => void;
   editpage:boolean;
   sprite?:Sprite;
 };
 export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProps){
     const router = useRouter();
-    let initial_bitmaparr:string[] = new Array(256).fill("fff");  
+    const initial_bitmaparr:string[] = new Array(256).fill("fff");  
     const [hist,setHist] = useState<string[][]>([])
     const [isDown, setIsDown] = useState(false);
     const [activeColor, setActiveColor] = useState<string>("#ffffff");
     const [selecting, setSelecting] = useState<boolean>(false);
     const [textarr, setTextArr] = useState<string>("");
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [bitmaparr, setBitMapArr] = useState<string[]>(initial_bitmaparr);
-    const[idstr,setIdStr] = useState<string|null>("");
     const[currSprite,setCurrSprite] = useState<Sprite|null>(sprite || null);
     const gridSize = 16;
     const [grid, setGrid] = useState<string[][]>(  initialGrid || 
@@ -45,6 +45,7 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
      // Add a global mouseup listener to reset isDown
      useEffect(() => {
       if (onGridChange) onGridChange(grid);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [grid]);
      useEffect(() => {
       const saved = localStorage.getItem("pixelGrid");
@@ -77,23 +78,18 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
       
         // Load existing sprites (or start fresh)
         const existing = JSON.parse(localStorage.getItem(savedSpritesKey) || "[]");
-      
         // Create a new entry
         const newEntry:Sprite = {
           id: generateUniqueId(), // unique ID based on timestamp
-          index:existing.length+1,
-          name: `Sprite ${existing.length + 1}`,
+          index:existing.length,
+          name: `Sprite ${existing.length}`,
           grid: grid, // your current grid state
           savedAt: new Date().toISOString(),
         };
       
         // Save back to localStorage
         localStorage.setItem(savedSpritesKey, JSON.stringify([...existing, newEntry]));
-      
-       
-        
           toast("Sprite saved!", {
-      
             action: {
               label: "View",
               onClick: () => router.push("/sprites"),
@@ -103,32 +99,20 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
               title: "!font-semibold !text-sm",
               actionButton:
                 "!border !border-primary !bg-ring  !group-hover:bg-secondary !px-10 !py-1 !text-sm !font-medium !hover:bg-accent !hover:text-accent-foreground !rounded-md",
-        
             },
           })
-        
       };
 
-      /*useEffect(()=>{
-        const idstr = localStorage.getItem("selectedSpriteId");
-        console.log("idstr is " + idstr);
-        if(idstr){
-          //find the current sprite in the storage:
-          //const id = parseInt(idstr);
-          const all = JSON.parse(localStorage.getItem("savedSprites") || "[]");
-          const found = all.find((sprite:any)=>sprite.id==idstr);
-          setIdStr(idstr);
-          if(found){
-            setGrid(found.grid);
-            setCurrSprite(found);
+      const pushToHistory = (newentry:string[]) =>{
+        setHist(prev=>{
+          const updated = [...prev,newentry];
+          if(updated.length>20){
+            return updated.slice(updated.length-20);
           }
-          setTimeout(() => {
-            localStorage.removeItem("selectedSpriteId");
-          }, 100);
-        
-         // localStorage.removeItem("selectedSpriteId");
-        }
-      }, []);*/
+          return updated;
+        });
+      };
+
       const updateTile = (i: number, j: number) => {
         setGrid((prev) => {
           const newGrid = prev.map((row) => [...row]);
@@ -140,20 +124,20 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
         setIsDown(true);
         if(selecting){
           const color = grid[row][col]
-          console.log(color);
+      //    console.log(color);
           setActiveColor(color);
           setSelecting(false);
           return
         }
         const old = convertArrayto6DigitBitMap(grid);
-        setHist([...hist,old])
-       //hist.push(old);
-        if(hist.length>20){
-          const newhist = hist.map((row)=>[...row]);
-          newhist[0].shift();
-          setHist(newhist)
-        }
-        console.log(hist)
+        pushToHistory(old);
+        //setHist([...hist,old])
+       // if(hist.length>20){
+       //   const newhist = hist.map((row)=>[...row]);
+        //  newhist[0].shift();
+        //  setHist(newhist)
+       // }
+    //    console.log(hist)
         updateTile(row,col);
       }
 
@@ -163,7 +147,7 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
         if(!bmemstring){return}
         const [bmemarr,err] = getBitMapArray(bmemstring);
         if(err==0) return;
-        console.log(bmemarr);
+      //  console.log(bmemarr);
         setGrid(bmemarr);
        
 
@@ -184,18 +168,18 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
           sprite.id == currSprite.id? {...sprite,grid}:sprite
           );
         localStorage.setItem("savedSprites", JSON.stringify(updatedsprites));
-        console.log(JSON.parse(localStorage.getItem("savedSprites")||"[]"))
+     //   console.log(JSON.parse(localStorage.getItem("savedSprites")||"[]"))
       //  console.log(currSprite.grid);
       //  console.log(grid)
         toast("Sprite #" + currSprite.index + " updated!")
       }
-      else{console.log("none")}
+     // else{console.log("none")}
       }
 
     const generateHexcodes = ():string[] => {
         const flatHexes = grid.flat();
         //console.log(flatHexes);
-        let newbitmaparr:string[] = new Array(256).fill("");
+        const newbitmaparr:string[] = new Array(256).fill("");
         let i:number = 0
         for (i=0;i<256;i++){
           const dig3 = getHex3Digit(flatHexes[i]);
@@ -209,18 +193,19 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
             Array.from({length:gridSize},()=>color)
         );
         const old = convertArrayto6DigitBitMap(grid);
-        setHist([...hist,old])
-        if(hist.length>20){
-          const newhist = hist.map((row)=>[...row]);
-          newhist[0].shift();
-          setHist(newhist)
-        }
+        pushToHistory(old);
+        //setHist([...hist,old])
+        //if(hist.length>20){
+         // const newhist = hist.map((row)=>[...row]);
+         // newhist[0].shift();
+          //setHist(newhist)
+       // }
      //   console.log(hist)
         setGrid(newGrid);
 
     }
     const Undo = () =>{
-        console.log(hist);
+     //   console.log(hist);
         if(hist.length ==0){return;}
         const lastrow = hist[hist.length-1]
         const newhist = hist.slice(0,-1)
@@ -260,18 +245,16 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
               <Button  size="sm" onClick={Undo} className=" mb-2" >Undo</Button>
               <Button  size="sm" onClick={()=>{fillBoard("#ffffff")}} className=" mb-2" >Clear</Button>
               </div>
-          <div className="flex flex-row gap-x-8 justify-center mb-4">
+          <div className="flex flex-row gap-x-2 justify-center mb-2">
             {currSprite && editpage?
-            <Button variant="secondary" onClick={updateSprite}>Update Sprite #{currSprite.index}</Button>:
-            <Button variant="secondary" onClick={saveSprite}>Add to Saved Sprites</Button>
-            }
-              {currSprite && editpage?
               <>
-              <Button onClick={()=>{
-                setGrid(currSprite.grid)
-              }} variant="secondary">Revert Changes</Button>
-              <Button variant="secondary" onClick={()=>{setCurrSprite(null);fillBoard("#ffffff"); }}>New Sprite</Button> </>:null
-              }
+              <Button onClick={()=>{setGrid(currSprite.grid)}}  variant="secondary" size="sm" className="text-primary-foreground" >Revert Changes</Button>
+            <Button variant="secondary" size="sm" className="text-primary-foreground " onClick={updateSprite}>Update Sprite #{currSprite.index}</Button>
+             </>:
+
+            <Button variant="secondary" size="sm" className="text-primary-foreground"  onClick={saveSprite}>Add to Saved Sprites</Button>
+            }
+              
               </div>
 
 
