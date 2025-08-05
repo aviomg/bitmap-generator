@@ -16,9 +16,14 @@ export default function EditSprite(){
 
 
     useEffect(()=>{
-        console.log(index);
+        if (!router.isReady) return; // ✅ wait for route to be ready
+        const { index } = router.query;
         if (!index || Array.isArray(index)) return;
-        if(!index) return;
+      
+
+    //    console.log(index);
+        //if (!index || Array.isArray(index)) return;
+      //  if(!index) return;
         const indexnum = parseInt(index);
         console.log("didnt return")
         const saved = JSON.parse(localStorage.getItem("savedSprites") || "[]");
@@ -35,7 +40,7 @@ export default function EditSprite(){
         };
         
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[index]);
+    },[router.isReady, router.query]);
 
 
     if (!sprite) return <div>Loading...</div>;
