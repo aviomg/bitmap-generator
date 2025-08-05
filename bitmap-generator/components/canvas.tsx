@@ -1,7 +1,7 @@
-import React, { act } from "react";
-import { useEffect, useRef, useState } from "react";
+import React from "react";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
-import { Pipette, Router } from "lucide-react";
+import { Pipette } from "lucide-react";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
@@ -27,14 +27,14 @@ type CanvasProps = {
 };
 export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProps){
     const router = useRouter();
-    let initial_bitmaparr:string[] = new Array(256).fill("fff");  
+    const initial_bitmaparr:string[] = new Array(256).fill("fff");  
     const [hist,setHist] = useState<string[][]>([])
     const [isDown, setIsDown] = useState(false);
     const [activeColor, setActiveColor] = useState<string>("#ffffff");
     const [selecting, setSelecting] = useState<boolean>(false);
     const [textarr, setTextArr] = useState<string>("");
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [bitmaparr, setBitMapArr] = useState<string[]>(initial_bitmaparr);
-    const[idstr,setIdStr] = useState<string|null>("");
     const[currSprite,setCurrSprite] = useState<Sprite|null>(sprite || null);
     const gridSize = 16;
     const [grid, setGrid] = useState<string[][]>(  initialGrid || 
@@ -45,6 +45,7 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
      // Add a global mouseup listener to reset isDown
      useEffect(() => {
       if (onGridChange) onGridChange(grid);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [grid]);
      useEffect(() => {
       const saved = localStorage.getItem("pixelGrid");
@@ -195,7 +196,7 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
     const generateHexcodes = ():string[] => {
         const flatHexes = grid.flat();
         //console.log(flatHexes);
-        let newbitmaparr:string[] = new Array(256).fill("");
+        const newbitmaparr:string[] = new Array(256).fill("");
         let i:number = 0
         for (i=0;i<256;i++){
           const dig3 = getHex3Digit(flatHexes[i]);
@@ -260,14 +261,14 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
               <Button  size="sm" onClick={Undo} className=" mb-2" >Undo</Button>
               <Button  size="sm" onClick={()=>{fillBoard("#ffffff")}} className=" mb-2" >Clear</Button>
               </div>
-          <div className="flex flex-row gap-x-2 justify-center mb-4">
+          <div className="flex flex-row gap-x-2 justify-center mb-2">
             {currSprite && editpage?
               <>
-              <Button onClick={()=>{setGrid(currSprite.grid)}} variant="secondary" className="text-primary-foreground" >Revert Changes</Button>
-            <Button variant="secondary" className="text-primary-foreground " onClick={updateSprite}>Update Sprite #{currSprite.index}</Button>
+              <Button onClick={()=>{setGrid(currSprite.grid)}}  variant="secondary" size="sm" className="text-primary-foreground" >Revert Changes</Button>
+            <Button variant="secondary" size="sm" className="text-primary-foreground " onClick={updateSprite}>Update Sprite #{currSprite.index}</Button>
              </>:
 
-            <Button variant="secondary" className="text-primary-foreground"  onClick={saveSprite}>Add to Saved Sprites</Button>
+            <Button variant="secondary" size="sm" className="text-primary-foreground"  onClick={saveSprite}>Add to Saved Sprites</Button>
             }
               
               </div>
