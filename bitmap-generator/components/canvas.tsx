@@ -42,6 +42,14 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
           Array.from({ length: gridSize }, () => activeColor)
         )
       );
+
+      useEffect(() => {
+        if (initialGrid) {
+          console.log("Canvas received initialGrid:", initialGrid);
+
+          setGrid(initialGrid);
+        }
+      }, [initialGrid]);
      // Add a global mouseup listener to reset isDown
      useEffect(() => {
       if (onGridChange) onGridChange(grid);
