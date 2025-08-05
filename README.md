@@ -9,6 +9,9 @@ This bitmap generator is a tool designed to help students on parts b and c of th
 4. If you want to change some of your sprites later (e.g., after viewing them on the emulator or the board), go to the My Sprites page and simply paste in your bmem file to render your sprites. You can edit them and then re-generate your bmem
 5. That's it! I hope that this website makes it easier to create, manipulate, and work with your sprites for the final project. Good luck!
 
+## Try it out!
+Navigate to ```/sprites``` and select "Load Sprites from bmem". Paste in the contents of ```sample-bmem.mem``` to generate a set of sprites. Play around!
+
 ## Features
 - Canvas and color picker for creating 16x16 pixel 'sprites', with ability to undo up to 20 strokes.
 - Ability to generate a 256-line string of hexcodes for a sprite, which stores the hexcode for each pixel and represents it.
