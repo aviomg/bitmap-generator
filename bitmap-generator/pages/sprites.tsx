@@ -31,6 +31,7 @@ import {
     useSortable,
   } from '@dnd-kit/sortable';
   import { CSS } from '@dnd-kit/utilities';
+import Head from "next/head";
 
 type StorageSprite = {
     id:string,
@@ -142,6 +143,10 @@ export default function SavedSpritesPage() {
         localStorage.setItem("savedSprites", JSON.stringify(reordered));
       };
   return (
+    <>
+       <Head>
+        <title>My Sprites | Bitmap Generator</title>
+        </Head>
     <div className="max-w-3xl mx-auto p-5 ">
       <h1 className="text-3xl font-bold mb-6 text-center">My Saved Sprites</h1>
      
@@ -281,6 +286,7 @@ Are you sure you want to delete all sprites? This action cannot be undone.
       <p className="mt-8 text-center mx-auto">by Avi Kumar</p>
 
     </div>
+    </>
   );
 }
 

@@ -2,10 +2,16 @@
 
 import { Card, CardContent, CardTitle, CardHeader } from "@/components/ui/card";
 import { MoveRight } from "lucide-react";
+import Head from "next/head";
 import Link from "next/link";
 
 export default function About(){
-    return(<div className="max-w-[1000] mx-auto text-center p-5 flex flex-col gap-y-0 mb-20 ">
+    return(
+        <>
+           <Head>
+        <title>How it Works | Bitmap Generator</title>
+        </Head>
+    <div className="max-w-[1000] mx-auto text-center p-5 flex flex-col gap-y-0 mb-20 ">
         <h1 className="text-3xl font-bold mb-5 text-primary">How it Works </h1>
         <h2 className="text-xl mb-5 text-primary">This bitmap generator is a tool designed to help you when you are on parts b and c of the final project.</h2>
        
@@ -53,6 +59,7 @@ export default function About(){
     </Card>
         <p className="mb-4">by Avi Kumar</p>
         </div>
-    </div>)
+    </div>
+    </>)
 
 }
