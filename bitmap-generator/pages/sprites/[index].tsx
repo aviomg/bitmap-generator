@@ -16,21 +16,28 @@ export default function EditSprite(){
 
 
     useEffect(()=>{
-        if (!router.isReady) return; // ✅ wait for route to be ready
+        if (!router.isReady){ 
+            console.log("router not rdy")
+            return; }// ✅ wait for route to be ready
         const { index } = router.query;
-        if (!index || Array.isArray(index)) return;
+        if (!index || Array.isArray(index)) {
+            console.log("array is not array");
+            return;}
       
 
     //    console.log(index);
         //if (!index || Array.isArray(index)) return;
       //  if(!index) return;
         const indexnum = parseInt(index);
-        console.log("didnt return")
+      //  console.log("didnt return")
         const saved = JSON.parse(localStorage.getItem("savedSprites") || "[]");
         console.log(saved)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const found = saved.find((s: any) => (s.index) == indexnum);
-        
+        console.log("Router ready:", router.isReady);
+console.log("Index param:", index);
+console.log("Saved sprites:", saved);
+console.log("Found sprite:", found);
         if (found){ setSprite(found)
             console.log(found);
         setGrid(found.grid);
