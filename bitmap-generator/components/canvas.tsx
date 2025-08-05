@@ -78,7 +78,6 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
       
         // Load existing sprites (or start fresh)
         const existing = JSON.parse(localStorage.getItem(savedSpritesKey) || "[]");
-     //   console.log(existing.length)
         // Create a new entry
         const newEntry:Sprite = {
           id: generateUniqueId(), // unique ID based on timestamp
@@ -90,11 +89,7 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
       
         // Save back to localStorage
         localStorage.setItem(savedSpritesKey, JSON.stringify([...existing, newEntry]));
-      
-       
-        
           toast("Sprite saved!", {
-      
             action: {
               label: "View",
               onClick: () => router.push("/sprites"),
@@ -104,32 +99,20 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
               title: "!font-semibold !text-sm",
               actionButton:
                 "!border !border-primary !bg-ring  !group-hover:bg-secondary !px-10 !py-1 !text-sm !font-medium !hover:bg-accent !hover:text-accent-foreground !rounded-md",
-        
             },
           })
-        
       };
 
-      /*useEffect(()=>{
-        const idstr = localStorage.getItem("selectedSpriteId");
-        console.log("idstr is " + idstr);
-        if(idstr){
-          //find the current sprite in the storage:
-          //const id = parseInt(idstr);
-          const all = JSON.parse(localStorage.getItem("savedSprites") || "[]");
-          const found = all.find((sprite:any)=>sprite.id==idstr);
-          setIdStr(idstr);
-          if(found){
-            setGrid(found.grid);
-            setCurrSprite(found);
+      const pushToHistory = (newentry:string[]) =>{
+        setHist(prev=>{
+          const updated = [...prev,newentry];
+          if(updated.length>20){
+            return updated.slice(updated.length-20);
           }
-          setTimeout(() => {
-            localStorage.removeItem("selectedSpriteId");
-          }, 100);
-        
-         // localStorage.removeItem("selectedSpriteId");
-        }
-      }, []);*/
+          return updated;
+        });
+      };
+
       const updateTile = (i: number, j: number) => {
         setGrid((prev) => {
           const newGrid = prev.map((row) => [...row]);
@@ -147,13 +130,13 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
           return
         }
         const old = convertArrayto6DigitBitMap(grid);
-        setHist([...hist,old])
-       //hist.push(old);
-        if(hist.length>20){
-          const newhist = hist.map((row)=>[...row]);
-          newhist[0].shift();
-          setHist(newhist)
-        }
+        pushToHistory(old);
+        //setHist([...hist,old])
+       // if(hist.length>20){
+       //   const newhist = hist.map((row)=>[...row]);
+        //  newhist[0].shift();
+        //  setHist(newhist)
+       // }
     //    console.log(hist)
         updateTile(row,col);
       }
@@ -210,12 +193,13 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
             Array.from({length:gridSize},()=>color)
         );
         const old = convertArrayto6DigitBitMap(grid);
-        setHist([...hist,old])
-        if(hist.length>20){
-          const newhist = hist.map((row)=>[...row]);
-          newhist[0].shift();
-          setHist(newhist)
-        }
+        pushToHistory(old);
+        //setHist([...hist,old])
+        //if(hist.length>20){
+         // const newhist = hist.map((row)=>[...row]);
+         // newhist[0].shift();
+          //setHist(newhist)
+       // }
      //   console.log(hist)
         setGrid(newGrid);
 
