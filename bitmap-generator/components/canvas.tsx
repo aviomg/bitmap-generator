@@ -245,11 +245,12 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
               <Button  size="sm" onClick={Undo} className=" mb-2" >Undo</Button>
               <Button  size="sm" onClick={()=>{fillBoard("#ffffff")}} className=" mb-2" >Clear</Button>
               </div>
-          <div className="flex flex-row gap-x-2 justify-center mb-2">
+          <div className="flex flex-row gap-x-4 justify-center mb-2">
             {currSprite && editpage?
               <>
               <Button onClick={()=>{setGrid(currSprite.grid)}}  variant="secondary" size="sm" className="text-primary-foreground" >Revert Changes</Button>
             <Button variant="secondary" size="sm" className="text-primary-foreground " onClick={updateSprite}>Update Sprite #{currSprite.index}</Button>
+            <Button variant="secondary"size="sm" className="text-primary-foreground" onClick={()=>{setCurrSprite(null);fillBoard("#ffffff"); router.push("/") }}>Start New Sprite</Button>
              </>:
 
             <Button variant="secondary" size="sm" className="text-primary-foreground"  onClick={saveSprite}>Add to Saved Sprites</Button>
