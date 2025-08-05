@@ -24,4 +24,4 @@ This bitmap generator is a tool designed to help students on parts b and c of th
 
 - Dr. Montek Singh, who gave me the idea to create this project after having the best time in his COMP 541 course (which I'd recommend to everyone!)
 
-![Website Preview](preview.png)
+![Website Preview](site-preview.png)
