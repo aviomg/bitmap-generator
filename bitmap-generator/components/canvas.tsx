@@ -56,21 +56,30 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [grid]);
      useEffect(() => {
-      const saved = localStorage.getItem("pixelGrid");
-      const savedcol = localStorage.getItem("activeColor");
-      if (saved) {
-        setGrid(JSON.parse(saved));
+    //  const saved = localStorage.getItem("pixelGrid");
+     // const savedcol = localStorage.getItem("activeColor");
+      //if (saved) {
+       // setGrid(JSON.parse(saved));
       
-      }
-      if(savedcol){
-        setActiveColor(JSON.parse(savedcol))
+     // }
+     // if(savedcol){
+      //  setActiveColor(JSON.parse(savedcol))
+      //}
+      if(!editpage){
+        const saved=localStorage.getItem("pixelGrid");
+        const savedcol = localStorage.getItem("activeColor");
+        if (saved) {setGrid(JSON.parse(saved));}
+        if (savedcol) {setActiveColor(JSON.parse(savedcol))};
+
+
       }
     }, []);
     
     useEffect(() => {
+      if(!editpage){
       localStorage.setItem("pixelGrid", JSON.stringify(grid));
-      localStorage.setItem("activeColor",JSON.stringify(activeColor))
-    }, [grid,activeColor]);
+      localStorage.setItem("activeColor",JSON.stringify(activeColor))}
+    }, [grid,activeColor,editpage]);
 
     useEffect(() => {
         const handleMouseUp = () => {
