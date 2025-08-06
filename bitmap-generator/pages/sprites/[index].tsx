@@ -38,9 +38,10 @@ export default function EditSprite(){
 console.log("Index param:", index);
 console.log("Saved sprites:", saved);
 console.log("Found sprite:", found);
-        if (found){ setSprite(found)
+        if (found){ 
+            setGrid(found.grid);
+            setSprite(found)
             console.log(found);
-        setGrid(found.grid);
         setName(found.name);
         console.log("the grid: " + found.grid)
         console.log(grid)
@@ -49,8 +50,7 @@ console.log("Found sprite:", found);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[router.isReady, router.query]);
 
-
-    if (!sprite) return <div>Loading...</div>;
+    if (!sprite || !grid) return <div>Loading…</div>;
 
     return(
     <>
