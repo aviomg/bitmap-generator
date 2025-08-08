@@ -205,7 +205,7 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
         setBitMapArr(newbitmaparr);
        return newbitmaparr;
       };
-    const fillBoard = (color:string) =>{
+    const fillBoard = (color:string) =>{ //i think the issue lies here since i changed this code recently!!!!!!!!
         const newGrid = Array.from({length:gridSize},()=>
             Array.from({length:gridSize},()=>color)
         );
@@ -232,6 +232,14 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
         setGrid(oldgrid);
     }
    
+    const startnewsprite=()=>{
+    localStorage.removeItem("pixelGrid");
+     setCurrSprite(null);
+     fillBoard("#ffffff"); 
+     router.push("/");
+   //  console.log(currSprite);
+    // console.log(grid);
+    }
 
     return(
         <div className="mx-auto text-center p-0 flex flex-col gap-y-2 ">
@@ -267,7 +275,7 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
               <>
               <Button onClick={()=>{setGrid(currSprite.grid)}}  variant="secondary" size="sm" className="text-primary-foreground" >Revert Changes</Button>
             <Button variant="secondary" size="sm" className="text-primary-foreground " onClick={updateSprite}>Update Sprite #{currSprite.index}</Button>
-            <Button variant="secondary"size="sm" className="text-primary-foreground" onClick={()=>{setCurrSprite(null);fillBoard("#ffffff"); router.push("/") }}>Start New Sprite</Button>
+            <Button variant="secondary"size="sm" className="text-primary-foreground" onClick={startnewsprite}>Start New Sprite</Button>
              </>:
 
             <Button variant="secondary" size="sm" className="text-primary-foreground"  onClick={saveSprite}>Add to Saved Sprites</Button>
