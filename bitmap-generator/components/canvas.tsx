@@ -73,6 +73,7 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
 
 
       }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     
     useEffect(() => {
