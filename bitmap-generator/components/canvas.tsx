@@ -190,6 +190,7 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
       //  console.log(currSprite.grid);
       //  console.log(grid)
         toast("Sprite #" + currSprite.index + " updated!")
+        localStorage.removeItem("pixelGrid");
       }
      // else{console.log("none")}
       }
@@ -274,9 +275,10 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
           <div className="flex flex-row gap-x-4 justify-center mb-2">
             {currSprite && editpage?
               <>
+                          <Button variant="outline"size="sm"  onClick={startnewsprite}>Start New Sprite</Button>
+
               <Button onClick={()=>{setGrid(currSprite.grid)}}  variant="secondary" size="sm" className="text-primary-foreground" >Revert Changes</Button>
             <Button variant="secondary" size="sm" className="text-primary-foreground " onClick={updateSprite}>Update Sprite #{currSprite.index}</Button>
-            <Button variant="secondary"size="sm" className="text-primary-foreground" onClick={startnewsprite}>Start New Sprite</Button>
              </>:
 
             <Button variant="secondary" size="sm" className="text-primary-foreground"  onClick={saveSprite}>Add to Saved Sprites</Button>
