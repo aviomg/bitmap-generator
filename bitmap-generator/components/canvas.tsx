@@ -29,6 +29,7 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
     const router = useRouter();
     const initial_bitmaparr:string[] = new Array(256).fill("fff");  
     const [hist,setHist] = useState<string[][]>([])
+    const [clear,setClear] = useState<boolean>(false);
     const [isDown, setIsDown] = useState(false);
     const [activeColor, setActiveColor] = useState<string>("#ffffff");
     const [selecting, setSelecting] = useState<boolean>(false);
@@ -70,9 +71,16 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
         const savedcol = localStorage.getItem("activeColor");
         if (saved) {setGrid(JSON.parse(saved));}
         if (savedcol) {setActiveColor(JSON.parse(savedcol))};
-
-
       }
+      return()=>{
+        if(clear){
+          localStorage.removeItem("pixelGrid");
+          localStorage.removeItem("activeColor");
+          console.log("cleared!")
+        }
+      }
+
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     
@@ -189,8 +197,10 @@ export function Canvas({ initialGrid, onGridChange,editpage,sprite }: CanvasProp
      //   console.log(JSON.parse(localStorage.getItem("savedSprites")||"[]"))
       //  console.log(currSprite.grid);
       //  console.log(grid)
+      localStorage.removeItem("pixelGrid");
         toast("Sprite #" + currSprite.index + " updated!")
-        localStorage.removeItem("pixelGrid");
+        setClear(true);
+
       }
      // else{console.log("none")}
       }
