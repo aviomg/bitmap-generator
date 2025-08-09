@@ -1,6 +1,6 @@
 # bitmap-generator
 
-This bitmap generator is a tool designed to help students on parts b and c of the final project for COMP 541: Digital Logic.
+This bitmap generator is a tool designed to help students on parts b and c of the final project for COMP 541: Digital Logic. It allows users to create, save, and modify sprites, as well as generate bmem.mem files for implementation on the board.
 
 ## Instructions for Use
 1. Create new sprites on the homepage using the pixel art grid, and click "Add to saved sprites" to save the sprite/character.
